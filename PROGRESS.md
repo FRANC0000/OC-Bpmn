@@ -72,6 +72,7 @@
 | `85a9c8f` | docs: add PROGRESS.md with audit trail of project milestones |
 | `4cfa923` | feat: ETAPA 2 - Implementacion DDD en codigo (86 archivos nuevos) |
 | `e138ef9` | feat: ETAPA 3 - Modelo de datos, indices y performance |
+| `710f444` | feat: ETAPA 4 - Integracion Camunda 8 Zeebe |
 
 ### Hito 2 — Implementación DDD en código
 
@@ -229,15 +230,65 @@ app.zeebe:
 
 ---
 
+### Hito 5 — Document Engine, formularios, bloques, grid, metadatos, catálogos
+
+**Nuevos value objects:**
+
+| Clase | Propósito |
+|-------|-----------|
+| `BlockType` | Enum con 9 tipos: TEXT, INPUT, TEXTAREA, SELECT, DATE, GRID, FILE, SIGNATURE, SECTION |
+| `ValidationRule` | Enum con 7 reglas: REQUIRED, MIN_LENGTH, MAX_LENGTH, MIN_VALUE, MAX_VALUE, PATTERN, EMAIL |
+
+**Nuevos aggregates:**
+
+| Entidad | Tabla | Propósito |
+|---------|-------|-----------|
+| `BlockCatalog` | `block_catalogs` | Catálogo de bloques reutilizables con items |
+| `BlockCatalogItem` | `block_catalog_items` | Item individual de bloque (label, type, config JSON, sort, required) |
+| `MetadataSchema` | `metadata_schemas` | Esquema de metadatos con schema JSONB para validación |
+| `Catalog` | `catalogs` | Catálogos de datos de referencia (preexistente V5, ahora con entidad) |
+| `CatalogItem` | `catalog_items` | Items de catálogo con soporte jerárquico (parent_id) |
+
+**Nuevos casos de uso:**
+
+| Use Case | Propósito |
+|----------|-----------|
+| `CreateBlockCatalogUseCase` | Crear catálogo de bloques reutilizables |
+| `AddBlocksToVersionUseCase` | Asignar bloques JSON a una versión de documento |
+| `CreateMetadataSchemaUseCase` | Definir esquema de metadatos |
+| `SaveDraftUseCase` | Guardar borrador de instancia de documento |
+| `CreateCatalogUseCase` | Crear catálogo de datos de referencia |
+| `AddCatalogItemUseCase` | Agregar item a catálogo (soporte jerárquico) |
+
+**Nuevos endpoints REST (`/api/v1/documents`):**
+
+| Endpoint | Método | Propósito |
+|----------|--------|-----------|
+| `/block-catalogs` | POST | Crear catálogo de bloques |
+| `/versions/blocks` | POST | Guardar blocks JSON en versión |
+| `/metadata-schemas` | POST | Definir esquema de metadatos |
+| `/drafts` | POST | Guardar borrador de instancia |
+| `/catalogs` | POST | Crear catálogo de referencia |
+| `/catalog-items` | POST | Agregar item a catálogo |
+
+**Migración Flyway (`V7__create_document_engine_tables.sql`):**
+- `block_catalogs` + `block_catalog_items` con FK + índice
+- `metadata_schemas` con JSONB schema
+- ALTER TABLE `document_versions`: constraint check `blocks_json` array
+- ALTER TABLE `document_definitions`: add `metadata_schema_id` FK + índice
+- ALTER TABLE `process_definitions`: add `form_schema_json` + `metadata_schema_id`
+
+**Total nuevos archivos:** 35 (eventos, entidades, repositorios, casos de uso, JPA, DTOs, controlador, migración)
+
+---
+
 ## In Progress
 - (nada actualmente)
 
 ---
 
 ## Next
-1. **ETAPA 5** — Document Engine, formularios, bloques, grid, metadatos, catálogos
-3. **ETAPA 5** — Document Engine, formularios, bloques, grid, metadatos, catálogos
-4. **ETAPA 6** — Seguridad, usuarios, auditoría, notificaciones
+1. **ETAPA 6** — Seguridad, usuarios, auditoría, notificaciones
 
 ---
 
