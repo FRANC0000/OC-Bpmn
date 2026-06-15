@@ -69,6 +69,65 @@
 | `a80df77` | chore: initial scaffolding of BPM Platform |
 | `58f3646` | feat: ETAPA 1 - Arquitectura General, SaaS, C4 y DDD |
 | `f680cff` | chore: add .angular/cache to gitignore and clean tracked cache |
+| `85a9c8f` | docs: add PROGRESS.md with audit trail of project milestones |
+
+### Hito 2 — Implementación DDD en código
+
+**Base común (`bpm-common`)**
+- `AggregateRoot`, `Entity`, `ValueObject` actualizados con JPA (`@MappedSuperclass`, `@Id`, `@Access`, `@Transient`)
+- `spring-boot-starter-data-jpa` agregado como dependencia
+
+**bpm-infrastructure**
+- `SpringDomainEventPublisher` — adaptador de `DomainEventPublisher` sobre `ApplicationEventPublisher`
+- `DomainEventConfig` — configuración del event publisher
+- `BaseJpaEntity` — `@MappedSuperclass` con `createdAt`/`updatedAt` automáticos
+
+**bpm-tenant-context** (20 archivos)
+- Value Objects: `Slug`, `SchemaName`, `PlanCode`, `TenantStatus`
+- Entidades: `Tenant` (AR), `Plan` (Entity)
+- Eventos: `TenantRegisteredEvent`, `TenantPlanChangedEvent`
+- Repositorios: `TenantRepository`, `PlanRepository`
+- Servicio dominio: `TenantProvisioningService`
+- Casos de uso: `RegisterTenantUseCase`, `ChangeTenantPlanUseCase`
+- JPA: converters, Spring Data repos, impls, `TenantProvisioningServiceImpl`
+
+**bpm-security-context** (19 archivos)
+- Value Objects: `Email`, `PasswordHash`, `DisplayName`, `RoleType`, `UserStatus`
+- Entidades: `User` (AR) con primary+secondary roles, `Role` (Entity)
+- Eventos: `UserRegisteredEvent`
+- Repositorios: `UserRepository`, `RoleRepository`
+- Casos de uso: `RegisterUserUseCase`, `AssignRoleUseCase`
+- JPA: converters, Spring Data repos, impls
+
+**bpm-process-context** (15 archivos)
+- Value Objects: `ProcessStatus`, `VersionStatus`
+- Entidades: `ProcessDefinition` (AR) con versions cascade, `ProcessVersion`, `ProcessTemplate`
+- Eventos: `ProcessCreatedEvent`, `ProcessVersionPublishedEvent`
+- Repositorios: `ProcessDefinitionRepository`, `ProcessTemplateRepository`
+- Casos de uso: `CreateProcessDefinitionUseCase`, `PublishProcessVersionUseCase`
+- JPA: converters, Spring Data repos, impls
+
+**bpm-document-context** (17 archivos)
+- Value Objects: `DocumentStatus`, `InstanceStatus`
+- Entidades: `DocumentDefinition` (AR) con versions cascade, `DocumentVersion`, `DocumentInstance` (AR), `FolioSequence`
+- Eventos: `DocumentDefinitionCreatedEvent`, `DocumentSubmittedEvent`, `DocumentCompletedEvent`
+- Repositorios: `DocumentDefinitionRepository`, `DocumentInstanceRepository`, `FolioSequenceRepository`
+- Casos de uso: `CreateDocumentDefinitionUseCase`, `SubmitDocumentUseCase`
+- JPA: Spring Data repos, impls
+
+**bpm-api** (15 archivos: 4 controllers + 11 DTOs)
+- `TenantController` — POST `/api/v1/tenants`, POST `/{id}/change-plan`
+- `SecurityController` — POST `/api/v1/security/users`, `/roles/primary`, `/roles/secondary`
+- `ProcessController` — POST `/api/v1/processes`, `/publish-version`
+- `DocumentController` — POST `/api/v1/documents/definitions`, `/submit`
+- DTOs genéricos: `ApiResponse<T>`
+- DTOs por contexto: request/response records con `jakarta.validation`
+
+**Total: ~86 archivos Java nuevos** (6 módulos actualizados)
+
+**POMs actualizados**
+- `bpm-common`: agregado `spring-boot-starter-data-jpa`
+- `bpm-{tenant,security,process,document}-context`: agregado `spring-boot-starter-data-jpa`
 
 ---
 
@@ -78,11 +137,10 @@
 ---
 
 ## Next
-1. **ETAPA 2** — Implementar DDD en código: agregados, entidades, eventos de dominio, casos de uso para los 4 bounded contexts
-2. **ETAPA 3** — Modelo de datos PostgreSQL, índices, performance
-3. **ETAPA 4** — Integración Camunda 8 Zeebe, deploy de procesos BPMN
-4. **ETAPA 5** — Document Engine, formularios, bloques, grid, metadatos, catálogos
-5. **ETAPA 6** — Seguridad, usuarios, auditoría, notificaciones
+1. **ETAPA 3** — Modelo de datos PostgreSQL, índices, performance
+2. **ETAPA 4** — Integración Camunda 8 Zeebe, deploy de procesos BPMN
+3. **ETAPA 5** — Document Engine, formularios, bloques, grid, metadatos, catálogos
+4. **ETAPA 6** — Seguridad, usuarios, auditoría, notificaciones
 
 ---
 
