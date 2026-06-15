@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatFormField, MatLabel, MatError, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -10,8 +10,14 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../../core/services/auth.service';
 
+function passwordsMatch: ValidatorFn = (ctrl: AbstractControl): ValidationErrors | null => {
+  const pw = ctrl.get('password');
+  const cf = ctrl.get('confirmPassword');
+  return pw && cf && pw.value !== cf.value ? { passwordsMismatch: true } : null;
+};
+
 @Component({
-  selector: 'bpm-login',
+  selector: 'bpm-register',
   standalone: true,
   imports: [RouterLink, ReactiveFormsModule, MatCard, MatCardContent, MatFormField, MatLabel, MatError, MatSuffix, MatInput, MatIcon, MatButton, MatIconButton, MatProgressSpinner],
   template: `
@@ -23,9 +29,16 @@ import { AuthService } from '../../../core/services/auth.service';
         </div>
         <mat-card class="auth-card">
           <mat-card-content>
-            <h2 class="auth-title">Iniciar sesión</h2>
-            <p class="auth-subtitle">Ingresa tus credenciales para continuar</p>
+            <h2 class="auth-title">Crear cuenta</h2>
+            <p class="auth-subtitle">Completa los datos para registrarte</p>
             <form [formGroup]="form" (ngSubmit)="onSubmit()" class="auth-form">
+              <mat-form-field>
+                <mat-label>Nombre completo</mat-label>
+                <input matInput formControlName="displayName" placeholder="Tu nombre" autocomplete="name">
+                @if (form.get('displayName')?.hasError('required') && form.get('displayName')?.touched) {
+                  <mat-error>El nombre es requerido</mat-error>
+                }
+              </mat-form-field>
               <mat-form-field>
                 <mat-label>Correo electrónico</mat-label>
                 <input matInput type="email" formControlName="email" placeholder="ejemplo@correo.com" autocomplete="email">
@@ -38,21 +51,34 @@ import { AuthService } from '../../../core/services/auth.service';
               </mat-form-field>
               <mat-form-field>
                 <mat-label>Contraseña</mat-label>
-                <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="••••••••" autocomplete="current-password">
+                <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
                 <button mat-icon-button matSuffix type="button" (click)="showPassword = !showPassword" tabindex="-1">
                   <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
                 </button>
                 @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
                   <mat-error>La contraseña es requerida</mat-error>
                 }
+                @if (form.get('password')?.hasError('minlength') && form.get('password')?.touched) {
+                  <mat-error>Mínimo 6 caracteres</mat-error>
+                }
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Confirmar contraseña</mat-label>
+                <input matInput [type]="showConfirm ? 'text' : 'password'" formControlName="confirmPassword" placeholder="Repite la contraseña" autocomplete="new-password">
+                <button mat-icon-button matSuffix type="button" (click)="showConfirm = !showConfirm" tabindex="-1">
+                  <mat-icon>{{ showConfirm ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+                @if (form.hasError('passwordsMismatch') && form.get('confirmPassword')?.touched) {
+                  <mat-error>Las contraseñas no coinciden</mat-error>
+                }
               </mat-form-field>
               <button mat-flat-button color="primary" class="submit-btn" type="submit" [disabled]="loading">
                 @if (loading) { <mat-spinner diameter="20" /> }
-                <span>Iniciar sesión</span>
+                <span>Crear cuenta</span>
               </button>
             </form>
             <p class="auth-redirect">
-              ¿No tienes cuenta? <a routerLink="/auth/register">Regístrate</a>
+              ¿Ya tienes cuenta? <a routerLink="/auth/login">Inicia sesión</a>
             </p>
           </mat-card-content>
         </mat-card>
@@ -83,31 +109,35 @@ import { AuthService } from '../../../core/services/auth.service';
     }
   `]
 })
-export class LoginComponent {
+export class RegisterComponent {
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
 
   showPassword = false;
+  showConfirm = false;
   loading = false;
 
   form = this.fb.nonNullable.group({
+    displayName: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required]],
-  });
+    password: ['', [Validators.required, Validators.minLength(6)]],
+    confirmPassword: ['', [Validators.required]],
+  }, { validators: passwordsMatch });
 
   onSubmit(): void {
     if (this.form.invalid) return;
     this.loading = true;
-    this.auth.login(this.form.getRawValue()).subscribe({
+    const { confirmPassword, ...data } = this.form.getRawValue();
+    this.auth.register(data).subscribe({
       next: () => {
-        this.snackBar.open('Inicio de sesión exitoso', '', { duration: 3000, panelClass: 'success-snackbar' });
-        this.router.navigate(['/tasks']);
+        this.snackBar.open('Cuenta creada exitosamente. Inicia sesión.', '', { duration: 4000, panelClass: 'success-snackbar' });
+        this.router.navigate(['/auth/login']);
       },
       error: (err) => {
         this.loading = false;
-        this.snackBar.open(err.error?.message || 'Error al iniciar sesión', 'Cerrar', { duration: 5000, panelClass: 'error-snackbar' });
+        this.snackBar.open(err.error?.message || 'Error al registrarse', 'Cerrar', { duration: 5000, panelClass: 'error-snackbar' });
       }
     });
   }

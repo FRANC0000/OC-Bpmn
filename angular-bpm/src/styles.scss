@@ -1,25 +1,30 @@
-:root {
-  --primary: #3f51b5;
-  --accent: #ff4081;
-  --warn: #f44336;
-  --background: #fafafa;
-  --surface: #ffffff;
-  --text-primary: rgba(0, 0, 0, 0.87);
-  --text-secondary: rgba(0, 0, 0, 0.6);
-  --border: #e0e0e0;
-  --sidebar-width: 260px;
-  --header-height: 64px;
+@use '@angular/material' as mat;
+@use 'theme/colors' as c;
+@use 'theme/variables';
+
+$primary: mat.define-palette(c.$primary-palette, 500);
+$accent: mat.define-palette(c.$accent-palette, 500);
+$warn: mat.define-palette(c.$warn-palette, 500);
+
+$theme: mat.define-light-theme((
+  color: (primary: $primary, accent: $accent, warn: $warn),
+  typography: mat.define-typography-config($font-family: var(--font-family)),
+  density: 0,
+));
+
+@include mat.all-component-themes($theme);
+
+.dark-theme {
+  $dark-primary: mat.define-palette(c.$primary-palette, 300);
+  $dark-accent: mat.define-palette(c.$accent-palette, 300);
+  $dark-warn: mat.define-palette(c.$warn-palette, 300);
+  $dark-theme: mat.define-dark-theme((
+    color: (primary: $dark-primary, accent: $dark-accent, warn: $dark-warn),
+  ));
+  @include mat.all-component-colors($dark-theme);
 }
 
-[data-theme="dark"] {
-  --background: #303030;
-  --surface: #424242;
-  --text-primary: rgba(255, 255, 255, 0.87);
-  --text-secondary: rgba(255, 255, 255, 0.6);
-  --border: #616161;
-}
-
-* {
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -27,9 +32,24 @@
 
 html, body {
   height: 100%;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--background);
-  color: var(--text-primary);
+  font-family: var(--font-family);
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body { margin: 0; }
+
+a { text-decoration: none; color: inherit; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-text-disabled); }
+
+.mat-mdc-snack-bar-container {
+  &.success-snackbar { --mdc-snackbar-container-color: #2e7d32; }
+  &.error-snackbar { --mdc-snackbar-container-color: #d32f2f; }
+  &.info-snackbar { --mdc-snackbar-container-color: #0288d1; }
+}

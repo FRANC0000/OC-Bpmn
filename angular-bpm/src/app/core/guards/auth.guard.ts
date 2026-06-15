@@ -1,10 +1,11 @@
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 export const authGuard = () => {
   const router = inject(Router);
-  const token = localStorage.getItem('bpm_token');
-  if (!token) {
+  const auth = inject(AuthService);
+  if (!auth.isAuthenticated()) {
     return router.parseUrl('/auth/login');
   }
   return true;
