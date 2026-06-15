@@ -62,6 +62,19 @@ springdoc:
     tagsSorter: alpha
 
 app:
+  zeebe:
+    enabled: false
+    gateway-address: ${ZEEBE_GATEWAY:localhost:26500}
+    secure: ${ZEEBE_SECURE:false}
+    client-id: ${ZEEBE_CLIENT_ID:}
+    client-secret: ${ZEEBE_CLIENT_SECRET:}
+    o-auth-url: ${ZEEBE_OAUTH_URL:}
+    default-request-timeout-ms: 10000
+    job-timeout-ms: 300000
+    job-worker-max-jobs-active: 32
+    job-worker-poll-interval-ms: 100
+    execution-threads: 2
+
   flyway:
     shared-migrations-location: classpath:db/migration/shared
     tenant-migrations-location: classpath:db/migration/tenant

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
+                  id="Definitions_1"
+                  targetNamespace="http://bpmplatform.com/bpmn"
+                  exporter="BPM Platform"
+                  exporterVersion="1.0">
+    <bpmn:process id="sample-approval" name="Sample Approval Process" isExecutable="true">
+        <bpmn:startEvent id="StartEvent_1" name="Inicio">
+            <bpmn:outgoing>Flow_1</bpmn:outgoing>
+        </bpmn:startEvent>
+        <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Activity_Submit" />
+        <bpmn:userTask id="Activity_Submit" name="Enviar solicitud">
+            <bpmn:extensionElements>
+                <zeebe:assignmentDefinition assignee="{{submitter}}" />
+            </bpmn:extensionElements>
+            <bpmn:incoming>Flow_1</bpmn:incoming>
+            <bpmn:outgoing>Flow_2</bpmn:outgoing>
+        </bpmn:userTask>
+        <bpmn:sequenceFlow id="Flow_2" sourceRef="Activity_Submit" targetRef="Gateway_Review" />
+        <bpmn:exclusiveGateway id="Gateway_Review" name="¿Requiere aprobación?" default="Flow_3">
+            <bpmn:incoming>Flow_2</bpmn:incoming>
+            <bpmn:outgoing>Flow_3</bpmn:outgoing>
+            <bpmn:outgoing>Flow_4</bpmn:outgoing>
+        </bpmn:exclusiveGateway>
+        <bpmn:sequenceFlow id="Flow_3" sourceRef="Gateway_Review" targetRef="Activity_DirectComplete">
+            <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">=not requiresApproval</bpmn:conditionExpression>
+        </bpmn:sequenceFlow>
+        <bpmn:sequenceFlow id="Flow_4" sourceRef="Gateway_Review" targetRef="Activity_Approve">
+            <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">=requiresApproval</bpmn:conditionExpression>
+        </bpmn:sequenceFlow>
+        <bpmn:userTask id="Activity_Approve" name="Aprobar solicitud">
+            <bpmn:extensionElements>
+                <zeebe:assignmentDefinition assignee="{{approver}}" />
+            </bpmn:extensionElements>
+            <bpmn:incoming>Flow_4</bpmn:incoming>
+            <bpmn:outgoing>Flow_5</bpmn:outgoing>
+        </bpmn:userTask>
+        <bpmn:sequenceFlow id="Flow_5" sourceRef="Activity_Approve" targetRef="Activity_Notify" />
+        <bpmn:serviceTask id="Activity_DirectComplete" name="Completar automáticamente">
+            <bpmn:extensionElements>
+                <zeebe:taskDefinition type="complete-task" />
+            </bpmn:extensionElements>
+            <bpmn:incoming>Flow_3</bpmn:incoming>
+            <bpmn:outgoing>Flow_6</bpmn:outgoing>
+        </bpmn:serviceTask>
+        <bpmn:sequenceFlow id="Flow_6" sourceRef="Activity_DirectComplete" targetRef="Activity_Notify" />
+        <bpmn:serviceTask id="Activity_Notify" name="Notificar resultado">
+            <bpmn:extensionElements>
+                <zeebe:taskDefinition type="notify-task" />
+            </bpmn:extensionElements>
+            <bpmn:incoming>Flow_5</bpmn:incoming>
+            <bpmn:incoming>Flow_6</bpmn:incoming>
+            <bpmn:outgoing>Flow_7</bpmn:outgoing>
+        </bpmn:serviceTask>
+        <bpmn:sequenceFlow id="Flow_7" sourceRef="Activity_Notify" targetRef="EndEvent_1" />
+        <bpmn:endEvent id="EndEvent_1" name="Fin">
+            <bpmn:incoming>Flow_7</bpmn:incoming>
+        </bpmn:endEvent>
+    </bpmn:process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+        <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="sample-approval">
+            <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+                <dc:Bounds x="172" y="102" width="36" height="36" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Activity_Submit_di" bpmnElement="Activity_Submit">
+                <dc:Bounds x="270" y="80" width="100" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Gateway_Review_di" bpmnElement="Gateway_Review">
+                <dc:Bounds x="430" y="97" width="50" height="50" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Activity_DirectComplete_di" bpmnElement="Activity_DirectComplete">
+                <dc:Bounds x="540" y="160" width="100" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Activity_Approve_di" bpmnElement="Activity_Approve">
+                <dc:Bounds x="540" y="40" width="100" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Activity_Notify_di" bpmnElement="Activity_Notify">
+                <dc:Bounds x="710" y="100" width="100" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="EndEvent_1_di" bpmnElement="EndEvent_1">
+                <dc:Bounds x="872" y="102" width="36" height="36" />
+            </bpmndi:BPMNShape>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn:definitions>

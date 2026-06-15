@@ -71,6 +71,7 @@
 | `f680cff` | chore: add .angular/cache to gitignore and clean tracked cache |
 | `85a9c8f` | docs: add PROGRESS.md with audit trail of project milestones |
 | `4cfa923` | feat: ETAPA 2 - Implementacion DDD en codigo (86 archivos nuevos) |
+| `e138ef9` | feat: ETAPA 3 - Modelo de datos, indices y performance |
 
 ### Hito 2 — Implementación DDD en código
 
@@ -183,13 +184,58 @@
 
 ---
 
+### Hito 4 — Integración Camunda 8 Zeebe
+
+**Infraestructura Zeebe (`bpm-infrastructure/client/`)**
+
+| Clase | Propósito |
+|-------|-----------|
+| `ZeebeProperties` | `@ConfigurationProperties(prefix = "app.zeebe")` — 13 propiedades configurables |
+| `ZeebeClientConfig` | `@Bean` condicional (`app.zeebe.enabled=true`), soporta OAuth (SaaS) y conexión directa |
+| `ProcessDeployer` | Deploy desde classpath o bytes BPMN a Zeebe |
+| `ProcessInstanceStarter` | Start de instancias con variables y tenant |
+| `ZeebeWorkerManager` | Registry de workers con lifecycle management |
+
+**Capa de aplicación (`bpm-process-context/`)**
+
+| Clase | Propósito |
+|-------|-----------|
+| `ZeebeDeploymentService` | Toma un `ProcessVersion` publicado y lo despliega en Zeebe |
+| `ProcessExecutionService` | Inicia instancias de proceso con variables + tenantId |
+
+**API REST**
+
+| Endpoint | Método | Propósito |
+|----------|--------|-----------|
+| `/api/v1/deployment/deploy` | POST | Desplegar versión de proceso en Zeebe |
+| `/api/v1/deployment/start` | POST | Iniciar instancia de proceso |
+
+**Configuración (`application.yml`)**
+```yaml
+app.zeebe:
+  enabled: false                        # Habilitar conexión a Zeebe
+  gateway-address: localhost:26500     # Self-managed o SaaS
+  secure: false                        # true para SaaS (TLS)
+  client-id: ...                       # SaaS OAuth client
+  client-secret: ...                   # SaaS OAuth secret
+  o-auth-url: ...                      # SaaS OAuth URL
+  job-timeout-ms: 300000
+  execution-threads: 2
+```
+
+**BPMN de ejemplo:** `bpmn/sample-approval.bpmn` — proceso de aprobación con 3 user tasks, 1 service task, gateway condicional
+
+**Dependencias:** `zeebe-client-java 8.6.2` (ya declarada en parent POM)
+
+---
+
 ## In Progress
 - (nada actualmente)
 
 ---
 
 ## Next
-1. **ETAPA 4** — Integración Camunda 8 Zeebe, deploy de procesos BPMN
+1. **ETAPA 5** — Document Engine, formularios, bloques, grid, metadatos, catálogos
 3. **ETAPA 5** — Document Engine, formularios, bloques, grid, metadatos, catálogos
 4. **ETAPA 6** — Seguridad, usuarios, auditoría, notificaciones
 
