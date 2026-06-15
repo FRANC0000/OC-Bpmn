@@ -74,6 +74,8 @@
 | `e138ef9` | feat: ETAPA 3 - Modelo de datos, indices y performance |
 | `710f444` | feat: ETAPA 4 - Integracion Camunda 8 Zeebe |
 | `7f8bd0c` | feat: ETAPA 5 - Document Engine, bloques, metadatos y catalogos |
+| `059f5d4` | feat: ETAPA 6 - Seguridad JWT, auditoria y notificaciones |
+| `b492245` | feat: frontend Angular responsive - layout, auth, documentos |
 
 ### Hito 2 — Implementación DDD en código
 
@@ -344,14 +346,64 @@ app.zeebe:
 
 ---
 
+### Hito 7 — Frontend Angular responsive (Fase 1: Layout + Auth + Documentos)
+
+**Tema Material 3:**
+- Paleta corporativa: primary `#1565C0` (azul), accent `#00897B` (teal)
+- Soporte light + dark por CSS variables y `data-theme` attribute
+- Tipografía Inter, bordes redondeados 12px, sombras suaves, scrollbar custom
+
+**Layout responsive:**
+
+| Componente | Descripción |
+|------------|-------------|
+| `MainLayoutComponent` | Shell: toolbar + sidenav + router outlet + bottom-nav mobile |
+| `HeaderComponent` | Toolbar: logo, menú hamburguesa mobile, notificaciones (badge), user menu con dark mode toggle + logout |
+| `SidenavComponent` | Nav lateral con iconos, 5 secciones, activo resaltado |
+| `BottomNavComponent` | Navegación inferior fija en mobile (5 items con icono+label) |
+| `NotificationPanelComponent` | Dropdown notificaciones, badge con contador, marcar leída |
+
+**Breakpoints responsive:**
+- `≥ 1024px` — sidenav fijo 260px, header completo
+- `768-1023px` — sidenav colapsado icon-only 64px
+- `< 768px` — sidenav `mode="over"`, bottom-nav fijo, header compacto
+
+**Auth:**
+
+| Página | Características |
+|--------|-----------------|
+| Login | Formulario con validación, password visibility toggle, loading spinner, snackbar errores, gradient background en desktop |
+| Register | Validación asíncrona, confirm password con validator custom, redirect a login tras éxito |
+
+**Servicios core:**
+
+| Servicio | Funcionalidad |
+|----------|---------------|
+| `AuthService` | Login, register, logout, token persistence en localStorage, `currentUser` signal |
+| `NotificationService` | Polling cada 30s, unread count signal, refresh, markAsRead |
+| `DocumentService` | CRUD definiciones, submit, list instances |
+
+**Documentos:**
+
+| Página | Descripción |
+|--------|-------------|
+| `DocumentListComponent` | Tabla responsive (desktop: tabla con th/td; mobile: cards verticales), skeleton loading, empty state, FAB en mobile |
+| `DocumentFormComponent` | Formulario crear definición con código, nombre, descripción |
+
+**Actualizaciones backend:**
+- `SecurityConfig.java`: `"/api/v1/security/**"` público para registro de usuarios
+
+---
+
 ## In Progress
 - (nada actualmente)
 
 ---
 
 ## Next
-1. **Tests** — Unit tests e integration tests
-2. **Frontend** — Conectar Angular con JWT y pantallas de login/notificaciones
+1. **Frontend - Documentos** — Submit, instancias, editor borrador, bloques dinámicos
+2. **Frontend - Procesos** — Lista, detail BPMN viewer, designer con bpmn-js
+3. **Frontend - Admin** — CRUD usuarios, roles, catálogos, tenants
 
 ---
 
