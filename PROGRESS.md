@@ -70,6 +70,7 @@
 | `58f3646` | feat: ETAPA 1 - Arquitectura General, SaaS, C4 y DDD |
 | `f680cff` | chore: add .angular/cache to gitignore and clean tracked cache |
 | `85a9c8f` | docs: add PROGRESS.md with audit trail of project milestones |
+| `4cfa923` | feat: ETAPA 2 - Implementacion DDD en codigo (86 archivos nuevos) |
 
 ### Hito 2 — Implementación DDD en código
 
@@ -131,14 +132,64 @@
 
 ---
 
+### Hito 3 — Modelo de datos PostgreSQL, índices y performance
+
+**Nuevas migraciones Flyway**
+
+| Migración | Descripción |
+|-----------|-------------|
+| `shared/V3__add_shared_performance_indexes.sql` | 5 índices, check constraints, funciones de resolución de tenant |
+| `tenant/V6__add_tenant_performance_indexes.sql` | ~50 índices incluyendo GIN en JSONB, check constraints |
+
+**Índices agregados por contexto:**
+
+| Contexto | Tabla | Índices nuevos |
+|----------|-------|----------------|
+| **Shared** | `tenant_registry` | plan, schema_name, composite (status, plan) |
+| **Shared** | `plans` | is_active, partial (code WHERE active) |
+| **Process** | `process_definitions` | owner, status, (slug, status), updated_at |
+| **Process** | `process_versions` | status, created_by, created_at, (process_id, status, version), FTS bpmn_xml |
+| **Process** | `process_templates` | category, published, (category, published), created_at |
+| **Document** | `document_definitions` | status, updated_at |
+| **Document** | `document_versions` | status, created_by, created_at, (doc_id, status, version), **GIN** blocks/metadata |
+| **Document** | `document_instances` | (doc_id, version), status, created_by, process_instance, created_at, (status, created_at), **GIN** values, completed_at |
+| **Document** | `folio_sequences` | UNIQUE (format, year) |
+| **Security** | `roles` | type, system |
+| **Security** | `users` | status, tenant, primary_role, (tenant, status), (tenant, email) |
+| **Audit** | `audit_log` | tenant, action, (action, created_at), (tenant, entity), **GIN** details |
+| **Audit** | `delegations` | from, to, active, (from, active), (to, active), (start, end) |
+| **Catalog** | `catalogs` | active, level, (level, active), partial (code WHERE active) |
+| **Catalog** | `catalog_items` | active, (catalog_id, active, sort_order) |
+
+**Check constraints agregadas:** status values en todas las tablas, tipos de planes, monedas, scopes, niveles de catálogo
+
+**Funciones PostgreSQL:**
+- `resolve_tenant_schema(p_identifier)` — lookup de schema por slug o id (PARALLEL SAFE)
+- `get_active_tenant_schemas()` — lista schemas activos para migraciones batch
+
+**Configuración de performance (`application.yml`):**
+- HikariCP: pool 5-20, timeouts, leak detection, connection validation
+- JPA batch: batch_size=50, order_inserts/updates, batch_versioned_data
+- Query: plan_cache=4096, in_clause_parameter_padding, fetch_size=200
+- Connection: provider_disables_autocommit, autocommit=false
+
+**PostgreSQL tuning (`docker-compose.yml`):**
+- shared_buffers=256MB, effective_cache_size=768MB, work_mem=16MB
+- maintenance_work_mem=64MB, random_page_cost=1.1 (SSD)
+- effective_io_concurrency=200, wal_buffers=16MB
+- Autovacuum optimizado (scale_factor más agresivo)
+- log_min_duration_statement=200ms (slow query log)
+- Límites de memoria (1GB container limit)
+
+---
+
 ## In Progress
 - (nada actualmente)
 
 ---
 
 ## Next
-1. **ETAPA 3** — Modelo de datos PostgreSQL, índices, performance
-2. **ETAPA 4** — Integración Camunda 8 Zeebe, deploy de procesos BPMN
+1. **ETAPA 4** — Integración Camunda 8 Zeebe, deploy de procesos BPMN
 3. **ETAPA 5** — Document Engine, formularios, bloques, grid, metadatos, catálogos
 4. **ETAPA 6** — Seguridad, usuarios, auditoría, notificaciones
 
