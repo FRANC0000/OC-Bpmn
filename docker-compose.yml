@@ -39,6 +39,8 @@ services:
       -c autovacuum_vacuum_scale_factor=0.05
       -c autovacuum_analyze_scale_factor=0.02
       -c log_min_duration_statement=200
+    networks:
+      - bpm-network
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -55,6 +57,56 @@ services:
       resources:
         limits:
           memory: 256m
+    networks:
+      - bpm-network
+
+  backend:
+    build:
+      context: ./bpm-platform
+      dockerfile: Dockerfile
+    container_name: bpm-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/bpm_platform
+      DB_USERNAME: bpmadmin
+      DB_PASSWORD: bpmadmin
+      JWT_SECRET: ${JWT_SECRET}
+      APP_ZEEBE_ENABLED: "false"
+      JAVA_OPTS: "-Xmx512m -Xms256m"
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    deploy:
+      resources:
+        limits:
+          memory: 768m
+        reservations:
+          memory: 384m
+    networks:
+      - bpm-network
+
+  frontend:
+    build:
+      context: ./angular-bpm
+      dockerfile: Dockerfile
+    container_name: bpm-frontend
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    deploy:
+      resources:
+        limits:
+          memory: 128m
+    networks:
+      - bpm-network
 
 volumes:
   postgres-data:
+
+networks:
+  bpm-network:
+    driver: bridge
