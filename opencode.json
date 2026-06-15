@@ -1,0 +1,10 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "command": {
+    "save-session": {
+      "description": "Exporta la sesion actual a sessions-backup/, actualiza BITACORA.md y pushea a GitHub para continuar en otro PC",
+      "template": "Ejecuta el script scripts/save-current-session.ps1 con PowerShell: C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -ExecutionPolicy Bypass -File scripts/save-current-session.ps1",
+      "subtask": true
+    }
+  }
+}
