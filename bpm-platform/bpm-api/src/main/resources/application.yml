@@ -18,8 +18,12 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        default_schema: public
+        multiTenancy: SCHEMA
+        tenant_identifier_resolver: com.bpmplatform.infrastructure.multitenant.TenantIdentifierResolverImpl
+        multi_tenant_connection_provider: com.bpmplatform.infrastructure.multitenant.TenantConnectionProviderImpl
     open-in-view: false
+  flyway:
+    enabled: false
 
 springdoc:
   api-docs:
@@ -27,6 +31,11 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     operationsSorter: method
+
+app:
+  flyway:
+    shared-migrations-location: classpath:db/migration/shared
+    tenant-migrations-location: classpath:db/migration/tenant
 
 logging:
   level:
