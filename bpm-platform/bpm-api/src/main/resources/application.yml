@@ -6,7 +6,7 @@ spring:
     name: bpm-platform
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/bpm_platform
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/bpm_platform
     username: ${DB_USERNAME:bpmadmin}
     password: ${DB_PASSWORD:bpmadmin}
     hikari:

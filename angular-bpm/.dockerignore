@@ -1,6 +1,3 @@
-.git
-.gitignore
 node_modules/
-dist/
-.angular/
-*.md
+**/.angular/cache/
+**/.DS_Store

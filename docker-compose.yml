@@ -2,16 +2,17 @@ services:
   postgres:
     image: postgres:16-alpine
     container_name: bpm-postgres
+    env_file: .env
     environment:
       POSTGRES_DB: bpm_platform
-      POSTGRES_USER: bpmadmin
-      POSTGRES_PASSWORD: bpmadmin
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U bpmadmin -d bpm_platform"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d bpm_platform"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -39,8 +40,6 @@ services:
       -c autovacuum_vacuum_scale_factor=0.05
       -c autovacuum_analyze_scale_factor=0.02
       -c log_min_duration_statement=200
-    networks:
-      - bpm-network
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -57,56 +56,40 @@ services:
       resources:
         limits:
           memory: 256m
-    networks:
-      - bpm-network
 
   backend:
     build:
       context: ./bpm-platform
-      dockerfile: Dockerfile
     container_name: bpm-backend
+    env_file: .env
+    environment:
+      DB_HOST: postgres
+    ports:
+      - "8080:8080"
     depends_on:
       postgres:
         condition: service_healthy
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/bpm_platform
-      DB_USERNAME: bpmadmin
-      DB_PASSWORD: bpmadmin
-      JWT_SECRET: ${JWT_SECRET}
-      APP_ZEEBE_ENABLED: "false"
-      JAVA_OPTS: "-Xmx512m -Xms256m"
-    ports:
-      - "8080:8080"
-    env_file:
-      - .env
     deploy:
       resources:
         limits:
-          memory: 768m
+          memory: 1g
         reservations:
-          memory: 384m
-    networks:
-      - bpm-network
+          memory: 512m
 
   frontend:
     build:
       context: ./angular-bpm
-      dockerfile: Dockerfile
     container_name: bpm-frontend
-    depends_on:
-      - backend
     ports:
       - "80:80"
+    depends_on:
+      - backend
     deploy:
       resources:
         limits:
           memory: 128m
-    networks:
-      - bpm-network
+        reservations:
+          memory: 64m
 
 volumes:
   postgres-data:
-
-networks:
-  bpm-network:
-    driver: bridge
