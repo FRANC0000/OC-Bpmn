@@ -4,6 +4,7 @@ import com.bpmplatform.common.application.UseCase;
 import com.bpmplatform.common.domain.DomainEventPublisher;
 import com.bpmplatform.security.domain.entity.User;
 import com.bpmplatform.security.domain.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -12,10 +13,13 @@ import java.util.UUID;
 public class RegisterUserUseCase {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
     private final DomainEventPublisher eventPublisher;
 
-    public RegisterUserUseCase(UserRepository userRepository, DomainEventPublisher eventPublisher) {
+    public RegisterUserUseCase(UserRepository userRepository, PasswordEncoder passwordEncoder,
+                               DomainEventPublisher eventPublisher) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
         this.eventPublisher = eventPublisher;
     }
 
@@ -25,7 +29,8 @@ public class RegisterUserUseCase {
             throw new IllegalArgumentException("Email already in use: " + input.email());
         }
 
-        var user = new User(UUID.randomUUID(), input.email(), input.passwordHash(),
+        var hash = passwordEncoder.encode(input.password());
+        var user = new User(UUID.randomUUID(), input.email(), hash,
                 input.displayName(), input.tenantId());
 
         userRepository.save(user);
@@ -34,6 +39,6 @@ public class RegisterUserUseCase {
         return new Output(user.getId(), user.getEmail(), user.getDisplayName());
     }
 
-    public record Input(String email, String passwordHash, String displayName, UUID tenantId) {}
+    public record Input(String email, String password, String displayName, UUID tenantId) {}
     public record Output(UUID userId, String email, String displayName) {}
 }

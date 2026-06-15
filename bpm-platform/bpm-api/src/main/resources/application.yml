@@ -75,6 +75,11 @@ app:
     job-worker-poll-interval-ms: 100
     execution-threads: 2
 
+  jwt:
+    secret: ${JWT_SECRET:CHANGE_ME_bpm_platform_jwt_secret_key_2026_min_256bits}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+    issuer: bpm-platform
+
   flyway:
     shared-migrations-location: classpath:db/migration/shared
     tenant-migrations-location: classpath:db/migration/tenant

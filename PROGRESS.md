@@ -73,6 +73,7 @@
 | `4cfa923` | feat: ETAPA 2 - Implementacion DDD en codigo (86 archivos nuevos) |
 | `e138ef9` | feat: ETAPA 3 - Modelo de datos, indices y performance |
 | `710f444` | feat: ETAPA 4 - Integracion Camunda 8 Zeebe |
+| `7f8bd0c` | feat: ETAPA 5 - Document Engine, bloques, metadatos y catalogos |
 
 ### Hito 2 — Implementación DDD en código
 
@@ -282,13 +283,75 @@ app.zeebe:
 
 ---
 
+### Hito 6 — Seguridad (JWT), auditoría, notificaciones
+
+**Nuevas dependencias en POMs:**
+- `spring-boot-starter-security` (en `bpm-security-context`)
+- `jjwt-api` 0.12.6 + `jjwt-impl` + `jjwt-jackson` (en `bpm-infrastructure` + parent)
+
+**Configuración JWT y Spring Security:**
+
+| Clase | Módulo | Propósito |
+|-------|--------|-----------|
+| `JwtProperties` | `bpm-infrastructure/config` | `app.jwt.secret`, `expiration-ms` (24h), `issuer` |
+| `JwtService` | `bpm-infrastructure/config` | Generar/validar tokens con HMAC-SHA, extraer claims |
+| `SecurityConfig` | `bpm-security-context/auth` | `SecurityFilterChain` stateless, endpoints públicos (auth/health/swagger), BCrypt |
+| `JwtAuthenticationFilter` | `bpm-security-context/auth` | Filtro `OncePerRequestFilter`, extrae Bearer token, setea `SecurityContext` |
+| `BpmUserDetailsService` | `bpm-security-context/auth` | `UserDetailsService`, carga usuario por email desde `UserRepository` |
+| `BpmUserDetails` | `bpm-security-context/auth` | Adaptador `UserDetails` para integración con Spring Security |
+
+**Casos de uso actualizados:**
+
+| Use Case | Cambio |
+|----------|--------|
+| `RegisterUserUseCase` | Ahora injecta `PasswordEncoder` y hashea con BCrypt antes de persistir |
+| `LoginUseCase` (nuevo) | Autentica credenciales con BCrypt.matches(), genera JWT, actualiza `lastLoginAt` |
+
+**Auditoría:**
+
+| Clase | Tabla | Propósito |
+|-------|-------|-----------|
+| `AuditLog` | `audit_log` (V4 existente) | JPA entity: userId, action, entityType/Id, tenantId, JSONB details/old/new, IP |
+| `AuditLogRepository` | `audit_log` | Spring Data JPA repository |
+| `AuditEventListener` | — | Escucha `DomainEvent`, registra automáticamente en `audit_log` |
+
+**Notificaciones:**
+
+| Clase | Tabla | Propósito |
+|-------|-------|-----------|
+| `Notification` | `notifications` (V8 nueva) | AggregateRoot: userId, type, title, message, entityType/Id, isRead |
+| `NotificationRepository` | `notifications` | Spring Data JPA con queries por userId, unread count |
+| `NotificationEventListener` | — | Escucha eventos de dominio (DocumentSubmitted, DocumentCompleted, UserRegistered) |
+
+**Nuevos endpoints REST:**
+
+| Endpoint | Método | Controlador | Propósito |
+|----------|--------|-------------|-----------|
+| `/api/v1/auth/login` | POST | `AuthController` | Login con email+password, devuelve JWT |
+| `/api/v1/audit/logs` | GET | `AuditController` | Listar logs de auditoría (paginado) |
+| `/api/v1/notifications` | GET | `NotificationController` | Listar notificaciones del usuario autenticado |
+| `/api/v1/notifications/unread-count` | GET | `NotificationController` | Contar no leídas |
+| `/api/v1/notifications/{id}/read` | POST | `NotificationController` | Marcar como leída |
+
+**Seguridad por endpoint:**
+- `/api/v1/auth/**` → Público (login)
+- `/api/v1/health` → Público
+- `/swagger-ui/**`, `/api-docs/**` → Público
+- Todo lo demás → Requiere JWT válido vía `JwtAuthenticationFilter`
+
+**Migración Flyway (`V8__create_notifications_table.sql`):**
+- `notifications` con índices por user_id + created_at + is_read
+
+---
+
 ## In Progress
 - (nada actualmente)
 
 ---
 
 ## Next
-1. **ETAPA 6** — Seguridad, usuarios, auditoría, notificaciones
+1. **Tests** — Unit tests e integration tests
+2. **Frontend** — Conectar Angular con JWT y pantallas de login/notificaciones
 
 ---
 
