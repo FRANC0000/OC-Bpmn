@@ -2,13 +2,14 @@ import { Component, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
-import { MatMenu, MatMenuContent, MatMenuItem } from '@angular/material/menu';
+import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatBadge } from '@angular/material/badge';
 import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'bpm-notification-panel',
   standalone: true,
-  imports: [MatIcon, MatButton, MatIconButton, MatMenu, MatMenuContent, MatMenuItem, RouterLink],
+  imports: [MatIcon, MatButton, MatIconButton, MatMenu, MatMenuContent, MatMenuTrigger, MatMenuItem, MatBadge, RouterLink],
   template: `
     <button mat-icon-button [matMenuTriggerFor]="notifMenu" class="notif-btn">
       <mat-icon [matBadge]="unreadCount()" matBadgeSize="small" matBadgeColor="warn">notifications</mat-icon>

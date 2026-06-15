@@ -14,7 +14,7 @@ import { DocumentService } from '../../../core/services/document.service';
 @Component({
   selector: 'bpm-document-form',
   standalone: true,
-  imports: [RouterLink, ReactiveFormsModule, Location, MatIcon, MatButton, MatCard, MatCardContent, MatFormField, MatLabel, MatError, MatInput, MatProgressSpinner],
+  imports: [RouterLink, ReactiveFormsModule, MatIcon, MatButton, MatCard, MatCardContent, MatFormField, MatLabel, MatError, MatInput, MatProgressSpinner],
   template: `
     <div class="page">
       <div class="page-header">

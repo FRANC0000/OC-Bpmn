@@ -6,7 +6,7 @@ import { MatButton } from '@angular/material/button';
 @Component({
   selector: 'bpm-designer',
   standalone: true,
-  imports: [Location, MatIcon, MatButton],
+  imports: [MatIcon, MatButton],
   template: `
     <div class="designer-page">
       <div class="designer-header">

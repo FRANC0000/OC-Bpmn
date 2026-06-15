@@ -1,6 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DatePipe } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatFabButton } from '@angular/material/button';
 import { MatCard, MatCardContent } from '@angular/material/card';
@@ -11,7 +10,7 @@ import { DocumentDefinition } from '../../../core/models/document.model';
 @Component({
   selector: 'bpm-document-list',
   standalone: true,
-  imports: [RouterLink, DatePipe, MatIcon, MatButton, MatFabButton, MatCard, MatCardContent],
+  imports: [RouterLink, MatIcon, MatButton, MatFabButton, MatCard, MatCardContent],
   template: `
     <div class="page">
       <div class="page-header">
@@ -52,7 +51,7 @@ import { DocumentDefinition } from '../../../core/models/document.model';
                     <span class="status-badge" [class.active]="doc.status === 'active'">{{ doc.status }}</span>
                   </div>
                   <div class="card-meta">
-                    <span>{{ doc.versions?.length || 0 }} versiones</span>
+                    <span>{{ doc.versions.length }} versiones</span>
                   </div>
                 </mat-card-content>
               </mat-card>
@@ -80,7 +79,7 @@ import { DocumentDefinition } from '../../../core/models/document.model';
                   </td>
                   <td><code>{{ doc.code }}</code></td>
                   <td><span class="status-badge" [class.active]="doc.status === 'active'">{{ doc.status }}</span></td>
-                  <td>{{ doc.versions?.length || 0 }}</td>
+                  <td>{{ doc.versions.length }}</td>
                   <td>
                     <button mat-stroked-button size="small">Ver</button>
                   </td>

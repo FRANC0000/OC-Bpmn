@@ -10,11 +10,11 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../../core/services/auth.service';
 
-function passwordsMatch: ValidatorFn = (ctrl: AbstractControl): ValidationErrors | null => {
+function passwordsMatch(ctrl: AbstractControl): ValidationErrors | null {
   const pw = ctrl.get('password');
   const cf = ctrl.get('confirmPassword');
   return pw && cf && pw.value !== cf.value ? { passwordsMismatch: true } : null;
-};
+}
 
 @Component({
   selector: 'bpm-register',

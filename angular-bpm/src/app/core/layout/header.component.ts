@@ -3,14 +3,14 @@ import { RouterLink } from '@angular/router';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
-import { MatMenu, MatMenuContent, MatMenuItem } from '@angular/material/menu';
+import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { AuthService } from '../services/auth.service';
 import { NotificationPanelComponent } from './notification-panel.component';
 
 @Component({
   selector: 'bpm-header',
   standalone: true,
-  imports: [MatToolbar, MatIcon, MatButton, MatIconButton, MatMenu, MatMenuContent, MatMenuItem, RouterLink, NotificationPanelComponent],
+  imports: [MatToolbar, MatIcon, MatButton, MatIconButton, MatMenu, MatMenuContent, MatMenuTrigger, MatMenuItem, RouterLink, NotificationPanelComponent],
   template: `
     <mat-toolbar>
       <button mat-icon-button (click)="menuToggle.emit()" class="menu-btn">

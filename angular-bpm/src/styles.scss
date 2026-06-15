@@ -1,28 +1,4 @@
-@use '@angular/material' as mat;
-@use 'theme/colors' as c;
 @use 'theme/variables';
-
-$primary: mat.define-palette(c.$primary-palette, 500);
-$accent: mat.define-palette(c.$accent-palette, 500);
-$warn: mat.define-palette(c.$warn-palette, 500);
-
-$theme: mat.define-light-theme((
-  color: (primary: $primary, accent: $accent, warn: $warn),
-  typography: mat.define-typography-config($font-family: var(--font-family)),
-  density: 0,
-));
-
-@include mat.all-component-themes($theme);
-
-.dark-theme {
-  $dark-primary: mat.define-palette(c.$primary-palette, 300);
-  $dark-accent: mat.define-palette(c.$accent-palette, 300);
-  $dark-warn: mat.define-palette(c.$warn-palette, 300);
-  $dark-theme: mat.define-dark-theme((
-    color: (primary: $dark-primary, accent: $dark-accent, warn: $dark-warn),
-  ));
-  @include mat.all-component-colors($dark-theme);
-}
 
 *, *::before, *::after {
   margin: 0;
