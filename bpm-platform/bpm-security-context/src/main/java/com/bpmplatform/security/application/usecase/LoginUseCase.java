@@ -38,9 +38,10 @@ public class LoginUseCase {
         userRepository.save(user);
 
         var token = jwtService.generateToken(user.getId(), user.getEmail(), user.getTenantId());
-        return new Output(token, user.getId(), user.getEmail(), user.getDisplayName());
+        var role = user.getPrimaryRole() != null ? user.getPrimaryRole().getName().toUpperCase() : "USER";
+        return new Output(token, user.getId(), user.getEmail(), user.getDisplayName(), role);
     }
 
     public record Input(String email, String password) {}
-    public record Output(String token, UUID userId, String email, String displayName) {}
+    public record Output(String token, UUID userId, String email, String displayName, String role) {}
 }

@@ -8,6 +8,7 @@ import com.bpmplatform.api.dto.deployment.StartProcessResponse;
 import com.bpmplatform.process.application.service.ProcessExecutionService;
 import com.bpmplatform.process.application.service.ZeebeDeploymentService;
 import jakarta.validation.Valid;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/deployment")
+@ConditionalOnProperty(name = "app.zeebe.enabled", havingValue = "true")
 public class DeploymentController {
 
     private final ZeebeDeploymentService deploymentService;

@@ -2,6 +2,7 @@ package com.bpmplatform.process.domain.repository;
 
 import com.bpmplatform.process.domain.entity.ProcessDefinition;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -10,4 +11,5 @@ public interface ProcessDefinitionRepository {
     Optional<ProcessDefinition> findById(UUID id);
     Optional<ProcessDefinition> findBySlug(String slug);
     boolean existsBySlug(String slug);
+    List<ProcessDefinition> findAll();
 }

@@ -4,17 +4,7 @@ export interface DocumentDefinition {
   name: string;
   description?: string;
   status: string;
-  versions: DocumentVersion[];
-}
-
-export interface DocumentVersion {
-  id: string;
-  version: string;
-  status: string;
-  blocksJson: string;
-  metadataJson: string;
-  createdAt: string;
-  createdBy: string;
+  versionCount: number;
 }
 
 export interface DocumentInstance {

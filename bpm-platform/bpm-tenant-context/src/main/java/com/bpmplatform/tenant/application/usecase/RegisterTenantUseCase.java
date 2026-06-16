@@ -36,14 +36,15 @@ public class RegisterTenantUseCase {
             throw new IllegalArgumentException("Slug already in use: " + input.slug());
         }
 
+        var tenantId = UUID.randomUUID();
         var slug = new Slug(input.slug());
-        var schemaName = new SchemaName("tenant_" + UUID.randomUUID().toString().replace("-", ""));
+        var schemaName = new SchemaName("tenant_" + tenantId.toString().replace("-", ""));
         var planCode = PlanCode.fromString(input.planCode());
 
         Plan plan = planRepository.findByCode(planCode.code())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid plan: " + input.planCode()));
 
-        var tenant = new Tenant(UUID.randomUUID(), input.name(), slug, schemaName, planCode);
+        var tenant = new Tenant(tenantId, input.name(), slug, schemaName, planCode);
 
         tenantRepository.save(tenant);
         provisioningService.provision(tenant);

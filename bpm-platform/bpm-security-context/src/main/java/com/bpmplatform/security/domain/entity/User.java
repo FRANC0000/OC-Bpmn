@@ -35,7 +35,7 @@ public class User extends AggregateRoot<UUID> {
     @Column(nullable = false)
     private String status = "active";
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "primary_role_id")
     private Role primaryRole;
 
@@ -72,6 +72,9 @@ public class User extends AggregateRoot<UUID> {
     public Instant getLastLoginAt() { return lastLoginAt; }
     public Set<Role> getSecondaryRoles() { return secondaryRoles; }
 
+    public void setDisplayName(String displayName) { this.displayName = displayName; }
+    public void setEmail(String email) { this.email = email; }
+
     public void assignPrimaryRole(Role role) {
         this.primaryRole = role;
     }
@@ -86,5 +89,9 @@ public class User extends AggregateRoot<UUID> {
 
     public void deactivate() {
         this.status = UserStatus.INACTIVE.value();
+    }
+
+    public void activate() {
+        this.status = UserStatus.ACTIVE.value();
     }
 }

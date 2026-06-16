@@ -76,13 +76,13 @@ public class DocumentInstance extends AggregateRoot<UUID> {
 
     public void submit() {
         this.status = InstanceStatus.SUBMITTED.value();
-        registerEvent(new DocumentSubmittedEvent(UUID.randomUUID(), id, folio, Instant.now()));
+        registerEvent(new DocumentSubmittedEvent(UUID.randomUUID(), getId(), folio, Instant.now()));
     }
 
     public void complete() {
         this.status = InstanceStatus.COMPLETED.value();
         this.completedAt = Instant.now();
-        registerEvent(new DocumentCompletedEvent(UUID.randomUUID(), id, folio, completedAt));
+        registerEvent(new DocumentCompletedEvent(UUID.randomUUID(), getId(), folio, completedAt));
     }
 
     public void cancel() {

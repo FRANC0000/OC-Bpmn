@@ -4,6 +4,7 @@ import com.bpmplatform.document.domain.entity.DocumentInstance;
 import com.bpmplatform.document.domain.repository.DocumentInstanceRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,5 +30,10 @@ public class DocumentInstanceRepositoryImpl implements DocumentInstanceRepositor
     @Override
     public Optional<DocumentInstance> findByFolio(String folio) {
         return jpaRepository.findByFolio(folio);
+    }
+
+    @Override
+    public List<DocumentInstance> findAll() {
+        return jpaRepository.findAll();
     }
 }

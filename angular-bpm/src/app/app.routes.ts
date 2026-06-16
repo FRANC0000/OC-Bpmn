@@ -21,6 +21,7 @@ export const routes: Routes = [
       { path: 'processes', loadChildren: () => import('./features/processes/processes.routes') },
       { path: 'designer', loadChildren: () => import('./features/designer/designer.routes') },
       { path: 'documents', loadChildren: () => import('./features/documents/documents.routes') },
+      { path: 'notifications', loadComponent: () => import('./features/notifications/pages/notifications-page.component').then(m => m.NotificationsPageComponent) },
       { path: 'admin', loadChildren: () => import('./features/admin/admin.routes') },
     ]
   },

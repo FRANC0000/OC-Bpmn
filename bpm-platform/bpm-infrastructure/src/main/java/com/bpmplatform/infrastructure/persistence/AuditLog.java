@@ -1,6 +1,5 @@
 package com.bpmplatform.infrastructure.persistence;
 
-import com.bpmplatform.common.domain.Entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -10,7 +9,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "audit_log")
-public class AuditLog extends Entity<UUID> {
+public class AuditLog extends com.bpmplatform.common.domain.Entity<UUID> {
 
     @Column(name = "user_id")
     private UUID userId;

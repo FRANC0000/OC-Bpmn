@@ -6,13 +6,18 @@ import { tap } from 'rxjs/operators';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
   const token = auth.getToken();
+  const user = auth.currentUser();
 
-  let cloned = req;
+  let headers = req.headers;
   if (token) {
-    cloned = req.clone({
-      headers: req.headers.set('Authorization', `Bearer ${token}`)
-    });
+    headers = headers.set('Authorization', `Bearer ${token}`);
   }
+  const tenantId = user?.tenantId || localStorage.getItem('bpm_tenant_id');
+  if (tenantId) {
+    headers = headers.set('X-Tenant-Id', tenantId);
+  }
+
+  const cloned = headers !== req.headers ? req.clone({ headers }) : req;
 
   return next(cloned).pipe(
     tap({ error: (err) => {

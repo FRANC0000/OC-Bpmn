@@ -56,3 +56,13 @@ docker-data/
 # Spring Boot
 application-local.yml
 application-dev.yml
+
+# Test / artifacts
+login_response.json
+
+# Root-level artifacts (opencode workspace, not project)
+/package.json
+/package-lock.json
+
+# Tool configs
+**/mise.toml

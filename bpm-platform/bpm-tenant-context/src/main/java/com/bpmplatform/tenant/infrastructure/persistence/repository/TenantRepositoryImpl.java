@@ -4,6 +4,7 @@ import com.bpmplatform.tenant.domain.entity.Tenant;
 import com.bpmplatform.tenant.domain.repository.TenantRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,5 +35,10 @@ public class TenantRepositoryImpl implements TenantRepository {
     @Override
     public boolean existsBySlug(String slug) {
         return jpaRepository.existsBySlug(slug);
+    }
+
+    @Override
+    public List<Tenant> findAll() {
+        return jpaRepository.findAll();
     }
 }

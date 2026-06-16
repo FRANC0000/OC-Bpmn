@@ -1,6 +1,7 @@
 export interface LoginRequest {
   email: string;
   password: string;
+  tenantId?: string;
 }
 
 export interface LoginResponse {
@@ -8,17 +9,18 @@ export interface LoginResponse {
   userId: string;
   email: string;
   displayName: string;
+  role: string;
 }
 
 export interface RegisterRequest {
   email: string;
   password: string;
   displayName: string;
-  tenantId?: string;
 }
 
 export interface RegisterResponse {
   userId: string;
+  tenantId: string;
   email: string;
   displayName: string;
 }

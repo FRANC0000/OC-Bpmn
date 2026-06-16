@@ -1,54 +1,270 @@
 :root {
+  // Primary
   --color-primary: #1565C0;
+  --color-on-primary: #FFFFFF;
+  --color-primary-container: #D1E4FF;
+  --color-on-primary-container: #001D36;
   --color-primary-light: #42a5f5;
   --color-primary-dark: #0d47a1;
+
+  // Secondary
+  --color-secondary: #546E7A;
+  --color-on-secondary: #FFFFFF;
+  --color-secondary-container: #CFD8DC;
+  --color-on-secondary-container: #0D1B2A;
+
+  // Accent
   --color-accent: #00897B;
   --color-accent-light: #4db6ac;
   --color-warn: #d32f2f;
-  --color-bg: #f8f9fa;
-  --color-surface: #ffffff;
-  --color-surface-hover: #f5f5f5;
-  --color-text: rgba(0, 0, 0, 0.87);
-  --color-text-secondary: rgba(0, 0, 0, 0.6);
-  --color-text-disabled: rgba(0, 0, 0, 0.38);
-  --color-border: #e0e0e0;
-  --color-border-light: #f0f0f0;
-  --color-success: #2e7d32;
-  --color-info: #0288d1;
-  --color-warning: #ed6c02;
 
+  // Surface & Background
+  --color-bg: #F8F9FA;
+  --color-surface: #FFFFFF;
+  --color-surface-hover: #F5F5F5;
+  --color-surface-variant: #E8EAED;
+  --color-on-surface: #1A1C1E;
+  --color-on-surface-variant: #44474F;
+
+  // Outline
+  --color-border: #E0E0E0;
+  --color-border-light: #F0F0F0;
+  --color-outline: #74777F;
+  --color-outline-variant: #C4C6D0;
+
+  // Text (opacity-based)
+  --color-text: rgba(0, 0, 0, 0.87);
+  --color-text-secondary: rgba(0, 0, 0, 0.60);
+  --color-text-disabled: rgba(0, 0, 0, 0.38);
+
+  // Semantic
+  --color-success: #2E7D32;
+  --color-on-success: #FFFFFF;
+  --color-info: #0288D1;
+  --color-on-info: #FFFFFF;
+  --color-warning: #ED6C02;
+  --color-on-warning: #FFFFFF;
+  --color-error: #BA1A1A;
+  --color-on-error: #FFFFFF;
+
+  // Dashboard icon sections
+  --color-icon-docs: #1565C0;
+  --color-icon-docs-bg: #D1E4FF;
+  --color-icon-procs: #2E7D32;
+  --color-icon-procs-bg: #C8E6C9;
+  --color-icon-design: #C62828;
+  --color-icon-design-bg: #FFCDD2;
+  --color-icon-admin: #7B1FA2;
+  --color-icon-admin-bg: #E1BEE7;
+
+  // Status badges
+  --color-status-active-bg: #E8F5E9;
+  --color-status-active-text: #2E7D32;
+  --color-status-draft-bg: #FFF8E1;
+  --color-status-draft-text: #F57F17;
+  --color-status-inactive-bg: #FFEBEE;
+  --color-status-inactive-text: #C62828;
+
+  // Misc
+  --color-bg-hover: rgba(0, 0, 0, 0.04);
+  --color-bg-active: rgba(0, 0, 0, 0.10);
+  --color-bg-code: #F5F5F5;
+
+  // Layout
   --sidebar-width: 260px;
   --sidebar-collapsed: 64px;
   --header-height: 64px;
   --header-height-mobile: 56px;
   --bottom-nav-height: 56px;
 
+  // Radius
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 24px;
 
+  // Shadows
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
   --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
   --shadow-lg: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
   --shadow-xl: 0 20px 25px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.04);
 
+  // Typography
   --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --transition-fast: 150ms ease;
   --transition-normal: 250ms ease;
 }
 
 [data-theme="dark"] {
-  --color-bg: #121212;
-  --color-surface: #1e1e1e;
-  --color-surface-hover: #2c2c2c;
-  --color-text: rgba(255, 255, 255, 0.87);
-  --color-text-secondary: rgba(255, 255, 255, 0.6);
-  --color-text-disabled: rgba(255, 255, 255, 0.38);
-  --color-border: #333;
-  --color-border-light: #2a2a2a;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-  --shadow-md: 0 4px 6px rgba(0,0,0,0.3);
-  --shadow-lg: 0 10px 15px rgba(0,0,0,0.3);
-  --shadow-xl: 0 20px 25px rgba(0,0,0,0.3);
+  // Primary
+  --color-primary: #90CAF9;
+  --color-on-primary: #003258;
+  --color-primary-container: #00497D;
+  --color-on-primary-container: #D1E4FF;
+  --color-primary-light: #A5D6FA;
+  --color-primary-dark: #64B5F6;
+
+  // Secondary
+  --color-secondary: #90A4AE;
+  --color-on-secondary: #1B2A36;
+  --color-secondary-container: #3A4B55;
+  --color-on-secondary-container: #CFD8DC;
+
+  // Accent
+  --color-accent: #4DB6AC;
+  --color-accent-light: #80CBC4;
+  --color-warn: #EF5350;
+
+  // Surface & Background — GitHub Dark / Linear-style elevation
+  --color-bg: #0D1117;
+  --color-surface: #161B22;
+  --color-surface-hover: #1C2128;
+  --color-surface-raised: #1C2128;
+  --color-surface-variant: #21262D;
+  --color-surface-overlay: #282E36;
+  --color-on-surface: #E6EDF3;
+  --color-on-surface-muted: #8B949E;
+  --color-on-surface-variant: #C4C6D0;
+
+  // Outline — subtle borders
+  --color-border: #30363D;
+  --color-border-light: #21262D;
+  --color-outline: #8E9099;
+  --color-outline-variant: #44474F;
+
+  // Text (opacity-based, over dark bg)
+  --color-text: rgba(255, 255, 255, 0.87);       // ~#E6EDF3
+  --color-text-secondary: rgba(255, 255, 255, 0.60); // ~#8B949E
+  --color-text-disabled: rgba(255, 255, 255, 0.38);  // ~#585D64
+
+  // Semantic
+  --color-success: #81C784;
+  --color-on-success: #003300;
+  --color-info: #4FC3F7;
+  --color-on-info: #003549;
+  --color-warning: #FFB74D;
+  --color-on-warning: #462A00;
+  --color-error: #FFB4A8;
+  --color-on-error: #601410;
+
+  // Dashboard icon sections
+  --color-icon-docs: #90CAF9;
+  --color-icon-docs-bg: #1A3550;
+  --color-icon-procs: #81C784;
+  --color-icon-procs-bg: #1A3520;
+  --color-icon-design: #EF9A9A;
+  --color-icon-design-bg: #3A1520;
+  --color-icon-admin: #CE93D8;
+  --color-icon-admin-bg: #2A1540;
+
+  // Status badges
+  --color-status-active-bg: #1B3A1B;
+  --color-status-active-text: #81C784;
+  --color-status-draft-bg: #3A2E00;
+  --color-status-draft-text: #FFD54F;
+  --color-status-inactive-bg: #3A1520;
+  --color-status-inactive-text: #EF9A9A;
+
+  // Misc
+  --color-bg-hover: rgba(255, 255, 255, 0.06);
+  --color-bg-active: rgba(255, 255, 255, 0.10);
+  --color-bg-code: #1C2128;
+
+  // Shadows — 1px top border + diffuse shadow (GitHub/Linear style)
+  --shadow-sm: 0 1px 0 #30363D;
+  --shadow-md: 0 1px 0 #30363D, 0 2px 6px rgba(0,0,0,0.3);
+  --shadow-lg: 0 1px 0 #30363D, 0 8px 24px rgba(0,0,0,0.4);
+  --shadow-xl: 0 1px 0 #30363D, 0 12px 48px rgba(0,0,0,0.5);
+
+  // Material MDC — dark mode overrides
+  --mdc-filled-text-field-container-color: #0D1117;
+  --mdc-filled-text-field-hover-container-color: #161B22;
+  --mdc-filled-text-field-focus-container-color: #161B22;
+  --mdc-filled-text-field-label-text-color: var(--color-on-surface-muted);
+  --mdc-filled-text-field-hover-label-text-color: var(--color-on-surface-muted);
+  --mdc-filled-text-field-focus-label-text-color: var(--color-primary);
+  --mdc-filled-text-field-input-text-color: var(--color-on-surface);
+  --mdc-filled-text-field-caret-color: var(--color-primary);
+  --mdc-filled-text-field-active-indicator-color: #30363D;
+  --mdc-filled-text-field-hover-active-indicator-color: #30363D;
+  --mdc-filled-text-field-focus-active-indicator-color: var(--color-primary);
+  --mdc-filled-text-field-error-active-indicator-color: var(--color-error);
+
+  --mdc-outlined-text-field-outline-color: #30363D;
+  --mdc-outlined-text-field-hover-outline-color: var(--color-outline);
+  --mdc-outlined-text-field-focus-outline-color: var(--color-primary);
+  --mdc-outlined-text-field-container-color: transparent;
+  --mdc-outlined-text-field-label-text-color: var(--color-on-surface-muted);
+  --mdc-outlined-text-field-input-text-color: var(--color-on-surface);
+
+  --mdc-text-button-label-text-color: var(--color-primary);
+  --mdc-text-button-hover-label-text-color: var(--color-primary-light);
+
+  --mdc-filled-button-container-color: var(--color-primary);
+  --mdc-filled-button-hover-container-color: var(--color-primary-light);
+  --mdc-filled-button-label-text-color: var(--color-on-primary);
+
+  --mdc-outlined-button-outline-color: #30363D;
+  --mdc-outlined-button-hover-outline-color: var(--color-primary);
+  --mdc-outlined-button-label-text-color: var(--color-primary);
+  --mdc-outlined-button-hover-label-text-color: var(--color-primary-light);
+
+  --mdc-icon-button-hover-state-layer-color: rgba(255,255,255,0.08);
+  --mdc-icon-button-focus-state-layer-color: rgba(255,255,255,0.12);
+  --mdc-icon-button-pressed-state-layer-color: rgba(255,255,255,0.16);
+
+  --mat-menu-container-color: var(--color-surface-overlay);
+  --mat-menu-item-label-text-color: var(--color-on-surface);
+  --mat-menu-item-hover-state-layer-color: rgba(255,255,255,0.06);
+
+  --mat-table-background-color: var(--color-surface);
+  --mat-table-header-headline-color: var(--color-on-surface-muted);
+  --mat-table-row-item-label-text-color: var(--color-on-surface);
+
+  --mdc-snackbar-container-color: var(--color-surface-overlay);
+  --mdc-snackbar-supporting-text-color: var(--color-on-surface);
+  --mdc-snackbar-action-label-text-color: var(--color-primary);
+
+  --mat-card-background-color: var(--color-surface);
+  --mat-card-title-text-color: var(--color-on-surface);
+  --mat-card-subtitle-text-color: var(--color-on-surface-muted);
+
+  --mat-dialog-container-elevation-shadow: var(--shadow-lg);
+
+  --mat-paginator-container-background-color: var(--color-surface);
+  --mat-paginator-container-text-color: var(--color-on-surface-muted);
+
+  --mat-expansion-container-background-color: var(--color-surface);
+  --mat-expansion-header-text-color: var(--color-on-surface);
+  --mat-expansion-actions-text-color: var(--color-primary);
+
+  --mat-table-row-item-outline-color: var(--color-border-light);
+
+  --mat-select-panel-background-color: var(--color-surface-overlay);
+  --mat-select-enabled-trigger-text-color: var(--color-on-surface);
+
+  --mat-option-label-text-color: var(--color-on-surface);
+  --mat-option-hover-state-layer-color: var(--color-bg-hover);
+  --mat-option-selected-state-label-text-color: var(--color-primary);
+  --mat-option-selected-state-layer-color: rgba(144,202,249,0.08);
+
+  --mdc-dialog-container-color: var(--color-surface-overlay);
+  --mdc-dialog-supporting-text-color: var(--color-on-surface-muted);
+  --mat-dialog-headline-color: var(--color-on-surface);
+
+  --mat-card-outline-color: var(--color-border);
+
+  --mdc-chip-container-color: var(--color-surface-variant);
+  --mdc-chip-label-text-color: var(--color-on-surface);
+  --mdc-chip-hover-container-color: var(--color-surface-hover);
+
+  --mat-toolbar-container-background-color: var(--color-surface-raised);
+
+  --mdc-bottom-navigation-container-color: var(--color-surface-raised);
+
+  --mdc-switch-track-color: #30363D;
+  --mdc-switch-handle-color: #8B949E;
+  --mdc-switch-selected-track-color: var(--color-primary);
+  --mdc-switch-selected-handle-color: var(--color-on-primary);
 }
+

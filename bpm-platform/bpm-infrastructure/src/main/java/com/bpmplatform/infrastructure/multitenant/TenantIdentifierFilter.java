@@ -35,7 +35,7 @@ public class TenantIdentifierFilter implements Filter {
     private String resolveTenantId(HttpServletRequest request) {
         String tenantId = request.getHeader(TENANT_HEADER);
         if (tenantId != null && !tenantId.isBlank()) {
-            return "tenant_" + tenantId;
+            return "tenant_" + tenantId.replace("-", "");
         }
         return "public";
     }

@@ -35,8 +35,8 @@ import { BottomNavComponent } from './bottom-nav.component';
   styles: [`
     .layout { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
     .sidenav-container { flex: 1; }
-    .sidenav { width: var(--sidebar-width); border-right: 1px solid var(--color-border); }
-    .content { display: flex; flex-direction: column; }
+    .sidenav { width: var(--sidebar-width); border-right: 1px solid var(--color-border); background: var(--color-surface-raised); }
+    .content { display: flex; flex-direction: column; background: var(--color-bg); }
     .main-content { flex: 1; padding: 24px; overflow-y: auto; }
     .mobile-nav { display: none; }
     @media (max-width: 767px) {

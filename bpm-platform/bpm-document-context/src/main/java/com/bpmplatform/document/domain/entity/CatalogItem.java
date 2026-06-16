@@ -1,6 +1,5 @@
 package com.bpmplatform.document.domain.entity;
 
-import com.bpmplatform.common.domain.Entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,7 +11,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "catalog_items")
-public class CatalogItem extends Entity<UUID> {
+public class CatalogItem extends com.bpmplatform.common.domain.Entity<UUID> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "catalog_id", nullable = false)

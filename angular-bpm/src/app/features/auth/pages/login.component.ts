@@ -15,7 +15,7 @@ import { AuthService } from '../../../core/services/auth.service';
   standalone: true,
   imports: [RouterLink, ReactiveFormsModule, MatCard, MatCardContent, MatFormField, MatLabel, MatError, MatSuffix, MatInput, MatIcon, MatButton, MatIconButton, MatProgressSpinner],
   template: `
-    <div class="auth-container">
+    <div class="auth-container auth-bg">
       <div class="auth-card-wrapper">
         <div class="auth-brand">
           <mat-icon class="brand-icon">assignment</mat-icon>
@@ -60,7 +60,7 @@ import { AuthService } from '../../../core/services/auth.service';
     </div>
   `,
   styles: [`
-    .auth-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%); }
+    .auth-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
     .auth-card-wrapper { width: 100%; max-width: 420px; }
     .auth-brand { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 32px; }
     .brand-icon { font-size: 40px; width: 40px; height: 40px; color: white; }
@@ -75,11 +75,8 @@ import { AuthService } from '../../../core/services/auth.service';
     .auth-redirect a { color: var(--color-primary); font-weight: 600; text-decoration: none; }
     .auth-redirect a:hover { text-decoration: underline; }
     @media (max-width: 480px) {
-      .auth-container { padding: 16px; background: var(--color-bg); }
+      .auth-container { padding: 16px; }
       .auth-brand { margin-bottom: 24px; }
-      .brand-icon { color: var(--color-primary); }
-      .brand-name { color: var(--color-text); }
-      .auth-card { box-shadow: var(--shadow-sm); }
     }
   `]
 })

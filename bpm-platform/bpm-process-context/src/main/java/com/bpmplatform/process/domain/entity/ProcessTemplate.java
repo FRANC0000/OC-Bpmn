@@ -1,6 +1,5 @@
 package com.bpmplatform.process.domain.entity;
 
-import com.bpmplatform.common.domain.Entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -9,7 +8,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "process_templates")
-public class ProcessTemplate extends Entity<UUID> {
+public class ProcessTemplate extends com.bpmplatform.common.domain.Entity<UUID> {
 
     @Column(nullable = false)
     private String name;

@@ -4,6 +4,7 @@ import com.bpmplatform.document.domain.entity.DocumentDefinition;
 import com.bpmplatform.document.domain.repository.DocumentDefinitionRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,5 +35,10 @@ public class DocumentDefinitionRepositoryImpl implements DocumentDefinitionRepos
     @Override
     public boolean existsByCode(String code) {
         return jpaRepository.existsByCode(code);
+    }
+
+    @Override
+    public List<DocumentDefinition> findAll() {
+        return jpaRepository.findAll();
     }
 }

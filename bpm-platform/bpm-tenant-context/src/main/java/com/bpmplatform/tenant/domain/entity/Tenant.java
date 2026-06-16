@@ -50,6 +50,9 @@ public class Tenant extends AggregateRoot<UUID> {
     public String getPlan() { return plan; }
     public String getStatus() { return status; }
 
+    public void setName(String name) { this.name = name; }
+    public void setSlug(String slug) { this.slug = slug; }
+
     public PlanCode getPlanCode() { return PlanCode.fromString(plan); }
     public TenantStatus getTenantStatus() { return TenantStatus.fromString(status); }
 

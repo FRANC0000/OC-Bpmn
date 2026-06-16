@@ -1,6 +1,5 @@
 package com.bpmplatform.document.domain.entity;
 
-import com.bpmplatform.common.domain.Entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -9,7 +8,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "folio_sequences")
-public class FolioSequence extends Entity<UUID> {
+public class FolioSequence extends com.bpmplatform.common.domain.Entity<UUID> {
 
     @Column(nullable = false, unique = true)
     private String format;

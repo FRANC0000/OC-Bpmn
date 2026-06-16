@@ -26,7 +26,10 @@
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
               "@angular/material/prebuilt-themes/indigo-pink.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              "bpmn-js/dist/assets/bpmn-js.css",
+              "bpmn-js/dist/assets/bpmn-font/css/bpmn.css",
+              "bpmn-js/dist/assets/diagram-js.css"
             ],
             "scripts": []
           },
@@ -62,7 +65,7 @@
             "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["@angular/material/prebuilt-themes/indigo-pink.css", "src/styles.scss"],
+            "styles": ["@angular/material/prebuilt-themes/indigo-pink.css", "src/styles.scss", "bpmn-js/dist/assets/bpmn-js.css", "bpmn-js/dist/assets/bpmn-font/css/bpmn.css", "bpmn-js/dist/assets/diagram-js.css"],
             "scripts": []
           }
         }

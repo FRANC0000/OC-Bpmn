@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatFabButton } from '@angular/material/button';
 import { MatCard, MatCardContent } from '@angular/material/card';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { DocumentService } from '../../../core/services/document.service';
 import { DocumentDefinition } from '../../../core/models/document.model';
@@ -40,7 +41,7 @@ import { DocumentDefinition } from '../../../core/models/document.model';
         @if (isMobile()) {
           <div class="card-list">
             @for (doc of definitions(); track doc.id) {
-              <mat-card class="doc-card" (click)="null">
+              <mat-card class="doc-card" [routerLink]="['/documents', doc.id]">
                 <mat-card-content>
                   <div class="card-header">
                     <mat-icon class="doc-icon">description</mat-icon>
@@ -51,14 +52,14 @@ import { DocumentDefinition } from '../../../core/models/document.model';
                     <span class="status-badge" [class.active]="doc.status === 'active'">{{ doc.status }}</span>
                   </div>
                   <div class="card-meta">
-                    <span>{{ doc.versions.length }} versiones</span>
+                    <span>{{ doc.versionCount }} versiones</span>
                   </div>
                 </mat-card-content>
               </mat-card>
             }
           </div>
         } @else {
-          <table class="doc-table">
+          <table class="data-table">
             <thead>
               <tr>
                 <th>Nombre</th>
@@ -79,9 +80,9 @@ import { DocumentDefinition } from '../../../core/models/document.model';
                   </td>
                   <td><code>{{ doc.code }}</code></td>
                   <td><span class="status-badge" [class.active]="doc.status === 'active'">{{ doc.status }}</span></td>
-                  <td>{{ doc.versions.length }}</td>
+                  <td>{{ doc.versionCount }}</td>
                   <td>
-                    <button mat-stroked-button size="small">Ver</button>
+                    <button mat-stroked-button size="small" [routerLink]="['/documents', doc.id]">Ver</button>
                   </td>
                 </tr>
               }
@@ -115,16 +116,9 @@ import { DocumentDefinition } from '../../../core/models/document.model';
     .doc-icon { color: var(--color-primary); }
     .doc-name { display: block; font-weight: 600; font-size: 14px; }
     .doc-code { display: block; font-size: 12px; color: var(--color-text-secondary); font-family: monospace; }
-    .status-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; background: var(--color-border); color: var(--color-text-secondary); margin-left: auto; }
-    .status-badge.active { background: #e8f5e9; color: #2e7d32; }
     .card-meta { margin-top: 8px; font-size: 12px; color: var(--color-text-secondary); }
     .fab { display: none; }
-    .doc-table { width: 100%; border-collapse: collapse; background: var(--color-surface); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); }
-    .doc-table th, .doc-table td { text-align: left; padding: 14px 16px; font-size: 14px; }
-    .doc-table th { background: var(--color-surface-hover); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-text-secondary); }
-    .doc-table td { border-bottom: 1px solid var(--color-border-light); }
-    .doc-table tr:last-child td { border-bottom: none; }
-    .doc-table tr:hover td { background: var(--color-surface-hover); }
+
     .cell-name { display: flex; align-items: center; gap: 8px; }
     .cell-name mat-icon { color: var(--color-primary); font-size: 20px; }
     .cell-name span { font-weight: 500; }
@@ -138,6 +132,7 @@ import { DocumentDefinition } from '../../../core/models/document.model';
 export class DocumentListComponent {
   private service = inject(DocumentService);
   private breakpoint = inject(BreakpointObserver);
+  private snackBar = inject(MatSnackBar);
 
   loading = signal(true);
   definitions = signal<DocumentDefinition[]>([]);
@@ -146,7 +141,10 @@ export class DocumentListComponent {
   constructor() {
     this.service.getDefinitions().subscribe({
       next: r => this.definitions.set(r.data),
-      error: () => this.loading.set(false),
+      error: () => {
+        this.loading.set(false);
+        this.snackBar.open('Error al cargar documentos', 'Cerrar', { duration: 4000 });
+      },
       complete: () => this.loading.set(false),
     });
   }

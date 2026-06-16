@@ -3,4 +3,6 @@ package com.bpmplatform.api.dto.auth;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public record LoginRequest(@Email @NotBlank String email, @NotBlank String password) {}
+import java.util.UUID;
+
+public record LoginRequest(@Email @NotBlank String email, @NotBlank String password, UUID tenantId) {}

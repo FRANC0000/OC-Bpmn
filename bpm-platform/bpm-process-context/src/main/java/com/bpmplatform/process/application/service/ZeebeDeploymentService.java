@@ -6,6 +6,7 @@ import com.bpmplatform.process.domain.entity.ProcessVersion;
 import com.bpmplatform.process.domain.repository.ProcessDefinitionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 @Service
+@ConditionalOnProperty(name = "app.zeebe.enabled", havingValue = "true")
 public class ZeebeDeploymentService {
 
     private static final Logger log = LoggerFactory.getLogger(ZeebeDeploymentService.class);

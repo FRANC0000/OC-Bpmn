@@ -4,6 +4,7 @@ import com.bpmplatform.process.domain.entity.ProcessDefinition;
 import com.bpmplatform.process.domain.repository.ProcessDefinitionRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,5 +35,10 @@ public class ProcessDefinitionRepositoryImpl implements ProcessDefinitionReposit
     @Override
     public boolean existsBySlug(String slug) {
         return jpaRepository.existsBySlug(slug);
+    }
+
+    @Override
+    public List<ProcessDefinition> findAll() {
+        return jpaRepository.findAll();
     }
 }

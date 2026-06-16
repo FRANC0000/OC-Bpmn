@@ -19,13 +19,18 @@ import com.bpmplatform.document.application.usecase.CreateBlockCatalogUseCase;
 import com.bpmplatform.document.application.usecase.CreateCatalogUseCase;
 import com.bpmplatform.document.application.usecase.CreateMetadataSchemaUseCase;
 import com.bpmplatform.document.application.usecase.SaveDraftUseCase;
+import com.bpmplatform.infrastructure.multitenant.TenantContext;
+import com.bpmplatform.security.infrastructure.auth.BpmUserDetails;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.function.Supplier;
 
 @RestController
 @RequestMapping("/api/v1/documents")
@@ -55,50 +60,75 @@ public class DocumentEngineController {
     @PostMapping("/block-catalogs")
     public ResponseEntity<ApiResponse<CreateBlockCatalogResponse>> createBlockCatalog(
             @Valid @RequestBody CreateBlockCatalogRequest request) {
-        var input = new CreateBlockCatalogUseCase.Input(request.code(), request.name(), request.description());
-        var output = createBlockCatalogUseCase.execute(input);
-        var response = new CreateBlockCatalogResponse(output.id(), output.code(), output.name());
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok("Block catalog created", response));
+        return withTenantContext(() -> {
+            var input = new CreateBlockCatalogUseCase.Input(request.code(), request.name(), request.description());
+            var output = createBlockCatalogUseCase.execute(input);
+            var response = new CreateBlockCatalogResponse(output.id(), output.code(), output.name());
+            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok("Block catalog created", response));
+        });
     }
 
     @PostMapping("/versions/blocks")
     public ResponseEntity<ApiResponse<AddBlocksResponse>> addBlocks(@Valid @RequestBody AddBlocksRequest request) {
-        var input = new AddBlocksToVersionUseCase.Input(request.documentId(), request.versionId(), request.blocksJson());
-        var output = addBlocksToVersionUseCase.execute(input);
-        var response = new AddBlocksResponse(output.versionId(), output.version());
-        return ResponseEntity.ok(ApiResponse.ok("Blocks added to version", response));
+        return withTenantContext(() -> {
+            var input = new AddBlocksToVersionUseCase.Input(request.documentId(), request.versionId(), request.blocksJson());
+            var output = addBlocksToVersionUseCase.execute(input);
+            var response = new AddBlocksResponse(output.versionId(), output.version());
+            return ResponseEntity.ok(ApiResponse.ok("Blocks added to version", response));
+        });
     }
 
     @PostMapping("/metadata-schemas")
     public ResponseEntity<ApiResponse<CreateMetadataSchemaResponse>> createMetadataSchema(
             @Valid @RequestBody CreateMetadataSchemaRequest request) {
-        var input = new CreateMetadataSchemaUseCase.Input(request.code(), request.name(), request.description(), request.schemaJson());
-        var output = createMetadataSchemaUseCase.execute(input);
-        var response = new CreateMetadataSchemaResponse(output.id(), output.code(), output.name());
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok("Metadata schema created", response));
+        return withTenantContext(() -> {
+            var input = new CreateMetadataSchemaUseCase.Input(request.code(), request.name(), request.description(), request.schemaJson());
+            var output = createMetadataSchemaUseCase.execute(input);
+            var response = new CreateMetadataSchemaResponse(output.id(), output.code(), output.name());
+            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok("Metadata schema created", response));
+        });
     }
 
     @PostMapping("/drafts")
     public ResponseEntity<ApiResponse<SaveDraftResponse>> saveDraft(@Valid @RequestBody SaveDraftRequest request) {
-        var input = new SaveDraftUseCase.Input(request.instanceId(), request.valuesJson());
-        var output = saveDraftUseCase.execute(input);
-        var response = new SaveDraftResponse(output.instanceId(), output.folio(), output.status());
-        return ResponseEntity.ok(ApiResponse.ok("Draft saved", response));
+        return withTenantContext(() -> {
+            var input = new SaveDraftUseCase.Input(request.instanceId(), request.valuesJson());
+            var output = saveDraftUseCase.execute(input);
+            var response = new SaveDraftResponse(output.instanceId(), output.folio(), output.status());
+            return ResponseEntity.ok(ApiResponse.ok("Draft saved", response));
+        });
     }
 
     @PostMapping("/catalogs")
     public ResponseEntity<ApiResponse<CreateCatalogResponse>> createCatalog(@Valid @RequestBody CreateCatalogRequest request) {
-        var input = new CreateCatalogUseCase.Input(request.code(), request.name(), request.description());
-        var output = createCatalogUseCase.execute(input);
-        var response = new CreateCatalogResponse(output.id(), output.code(), output.name());
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok("Catalog created", response));
+        return withTenantContext(() -> {
+            var input = new CreateCatalogUseCase.Input(request.code(), request.name(), request.description());
+            var output = createCatalogUseCase.execute(input);
+            var response = new CreateCatalogResponse(output.id(), output.code(), output.name());
+            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok("Catalog created", response));
+        });
     }
 
     @PostMapping("/catalog-items")
     public ResponseEntity<ApiResponse<AddCatalogItemResponse>> addCatalogItem(@Valid @RequestBody AddCatalogItemRequest request) {
-        var input = new AddCatalogItemUseCase.Input(request.catalogId(), request.code(), request.label(), request.sortOrder(), request.metadataJson());
-        var output = addCatalogItemUseCase.execute(input);
-        var response = new AddCatalogItemResponse(output.id(), output.code(), output.label());
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok("Catalog item added", response));
+        return withTenantContext(() -> {
+            var input = new AddCatalogItemUseCase.Input(request.catalogId(), request.code(), request.label(), request.sortOrder(), request.metadataJson());
+            var output = addCatalogItemUseCase.execute(input);
+            var response = new AddCatalogItemResponse(output.id(), output.code(), output.label());
+            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok("Catalog item added", response));
+        });
+    }
+
+    private <T> ResponseEntity<T> withTenantContext(Supplier<ResponseEntity<T>> block) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getPrincipal() instanceof BpmUserDetails user) {
+            var schema = "tenant_" + user.getTenantId().toString().replace("-", "");
+            TenantContext.setTenantId(schema);
+        }
+        try {
+            return block.get();
+        } finally {
+            TenantContext.clear();
+        }
     }
 }

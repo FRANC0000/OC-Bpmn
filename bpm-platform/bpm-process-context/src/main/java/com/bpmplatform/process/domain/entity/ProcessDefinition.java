@@ -31,6 +31,9 @@ public class ProcessDefinition extends AggregateRoot<UUID> {
     @Column(name = "owner_user_id")
     private UUID ownerUserId;
 
+    @Column(name = "bpmn_xml", columnDefinition = "TEXT")
+    private String bpmnXml;
+
     @Column(nullable = false)
     private String status = "draft";
 
@@ -53,12 +56,14 @@ public class ProcessDefinition extends AggregateRoot<UUID> {
     public String getDescription() { return description; }
     public String getSlug() { return slug; }
     public UUID getOwnerUserId() { return ownerUserId; }
+    public String getBpmnXml() { return bpmnXml; }
     public String getStatus() { return status; }
     public List<ProcessVersion> getVersions() { return versions; }
 
     public ProcessStatus getProcessStatus() { return ProcessStatus.fromString(status); }
 
     public void setDescription(String description) { this.description = description; }
+    public void setBpmnXml(String bpmnXml) { this.bpmnXml = bpmnXml; }
 
     public void activate() { this.status = ProcessStatus.ACTIVE.value(); }
 

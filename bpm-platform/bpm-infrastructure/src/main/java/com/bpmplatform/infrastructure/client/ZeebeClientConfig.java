@@ -43,7 +43,7 @@ public class ZeebeClientConfig {
                     .clientId(properties.getClientId())
                     .clientSecret(properties.getClientSecret())
                     .audience(properties.getGatewayAddress())
-                    .authorizationServer(properties.getOAuthUrl())
+                    .authorizationServerUrl(properties.getOAuthUrl())
                     .build();
             builder = builder.credentialsProvider(credentialsProvider);
             log.info("Configuring Zeebe client with OAuth for cluster: {}", properties.getGatewayAddress());

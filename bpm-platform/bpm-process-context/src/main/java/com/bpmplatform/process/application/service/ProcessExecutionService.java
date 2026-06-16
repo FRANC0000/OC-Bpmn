@@ -3,12 +3,14 @@ package com.bpmplatform.process.application.service;
 import com.bpmplatform.infrastructure.client.ProcessInstanceStarter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.UUID;
 
 @Service
+@ConditionalOnProperty(name = "app.zeebe.enabled", havingValue = "true")
 public class ProcessExecutionService {
 
     private static final Logger log = LoggerFactory.getLogger(ProcessExecutionService.class);
